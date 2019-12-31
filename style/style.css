@@ -37,6 +37,10 @@ body{
 
 }
 
+*{
+    box-sizing: border-box;
+}
+
 .toolbox img , .inventory img{
     width: 80%;
     height: 20%;
@@ -45,8 +49,9 @@ body{
 
 #player{
     position: absolute;
-    width: 40px;
-    height: 80px;
+    background-color: red;
+    /* width: 40px;
+    height: 80px; */
     z-index: 10;
 }
 
@@ -62,6 +67,7 @@ body{
 }
 
 .tile{
+    /* border: 1px solid black; */
     width:5%;
     height: 10%;
 }
