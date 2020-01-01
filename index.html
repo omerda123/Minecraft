@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,10 @@
     <link rel="stylesheet" href="./style/style.css">
     <title>Document</title>
 </head>
+
 <body>
     <div class="game">
-       
+
         <div class="inventory"></div>
         <div class="world">
             <img src="./images/cloud.png" class="cloud">
@@ -17,7 +19,27 @@
         </div>
         <div class="toolbox"></div>
     </div>
+    <div class="info">
+        <img src="./images/info.png" alt="info" id="info">
+    </div>
+    <div class="information">
+        <div>
+            <span>Navigate using keypad keys</span> <span><img src="./images/wasd.png" alt="keypad" width="150px" height="80px"></span>
+        </div>
 
+        <div>
+            <span>Hit space to remove tile</span> <span><img src="./images/space.png" alt="keypad" width="200px" height="70px"></span>
+        </div>
+        <div>
+            <span>Hit enter to place tile</span> <span><img src="./images/enter.png" alt="keypad" width="100px" height="70px"></span>
+        </div>
+
+        <div>
+            <span>Hit 1,2,3 to change tool <br> Hit 4,5,6 to change tile type</span> <span><img src="./images/123.png" alt="keypad" width="100px" height="40px"><br>
+                <img src="./images/456.png" alt="keypad" width="100px" height="40px"></span>
+        </div>
+    </div>
     <script src="./script/index.js"></script>
 </body>
+
 </html>
