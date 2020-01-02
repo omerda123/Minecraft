@@ -16,8 +16,7 @@ const getPlayerRowsAndColsByPosition = () => {
 }
 
 const changeTool = (el) => {
-    console.log(el)
-    console.log(el.id);
+
     if (["axe", "pickaxe", "shovel"].includes(tool))
         tool = el.id;
     else if (["rocks", "trees", "dirt"])
@@ -38,7 +37,7 @@ const movePlayer = (e) => {
             topPosition -= 1;
         else {
             document.getElementById(tilesArray[playerPosition.row - 1][playerPosition.col].id).classList.add("red");
-            tile = tilesArray[playerPosition.row-1][playerPosition.col].type;
+            tile = tilesArray[playerPosition.row - 1][playerPosition.col].type;
 
         }
         player.style.top = topPosition + "%"
@@ -49,7 +48,7 @@ const movePlayer = (e) => {
             topPosition += 1;
         else {
             document.getElementById(tilesArray[playerPosition.row + 1][playerPosition.col].id).classList.add("red");
-            tile = tilesArray[playerPosition.row +1][playerPosition.col].type;
+            tile = tilesArray[playerPosition.row + 1][playerPosition.col].type;
 
         }
         player.style.top = topPosition + "%"
@@ -61,7 +60,7 @@ const movePlayer = (e) => {
             left -= 1;
         else {
             document.getElementById(tilesArray[playerPosition.row][playerPosition.col - 1].id).classList.add("red");
-            tile = tilesArray[playerPosition.row ][playerPosition.col - 1].type;
+            tile = tilesArray[playerPosition.row][playerPosition.col - 1].type;
 
         }
         player.style.left = left + "%"
@@ -74,7 +73,7 @@ const movePlayer = (e) => {
             left += 1;
         else {
             document.getElementById(tilesArray[playerPosition.row][playerPosition.col + 1].id).classList.add("red");
-            tile = tilesArray[playerPosition.row ][playerPosition.col +1].type;
+            tile = tilesArray[playerPosition.row][playerPosition.col + 1].type;
         }
         player.style.left = left + "%"
     }
@@ -82,12 +81,13 @@ const movePlayer = (e) => {
         changeTool(toolBox.querySelector(`img:nth-child(${e.keyCode - 48})`))
     }
     else if ([52, 53, 54].includes(e.keyCode)) {
-        changeTool(inventory.querySelector(`img:nth-child(${e.keyCode - 51})`))
+
+        changeTool(inventoryItems[e.keyCode - 52])
     }
 
     else if (e.keyCode == '32') { // space
-        console.log(tool, tile);
-        if ((tool === "axe" && tile === "tree") || (tool === "pickaxe" && tile === "rocks") || (tool === "shovel" && tile === "dirt")) {
+        // console.log(tool, tile);
+        if ((tool === "axe" && tile === "trees") || (tool === "pickaxe" && tile === "rocks") || (tool === "shovel" && tile === "dirt")) {
             if (direction === "right") {
                 document.getElementById(tilesArray[playerPosition.row][playerPosition.col + 1].id).remove();
                 tilesArray[playerPosition.row][playerPosition.col + 1] = 0;
@@ -104,6 +104,8 @@ const movePlayer = (e) => {
                 document.getElementById(tilesArray[playerPosition.row + 1][playerPosition.col].id).remove();
                 tilesArray[playerPosition.row + 1][playerPosition.col] = 0;
             }
+            inventoryArray[inventoryArray.findIndex(x => { return x.name == tile })].quantity++;
+            createInventory();
         }
     }
 }
@@ -118,6 +120,7 @@ const setArrayOfObstacles = () => {
 
 }
 const createBoard = () => {
+    createInventory();
     let id = 0;
     for (let i = 0; i < 10; i++) {
         tilesArray[i] = [];
@@ -128,16 +131,16 @@ const createBoard = () => {
             if (((i == 3) || (i == 4)) && ((j == 12) || (j == 13) || (j == 14))) {  // create trees
                 let pic = document.createElement("img");
                 pic.src = "./images/trees.jpg";
-                pic.className = "tree"
+                pic.className = "trees"
                 pic.id = id;
-                tilesArray[i][j] = { "type": "tree", "id": id++ };
+                tilesArray[i][j] = { "type": "trees", "id": id++ };
                 tile.appendChild(pic)
             }
 
             if (((i == 6) || (i == 5)) && (j == 13)) {
                 let pic = document.createElement("img");
                 pic.src = "./images/log.jpg";
-                pic.className = "tree"
+                pic.className = "trees"
                 pic.id = id;
                 tilesArray[i][j] = { "type": "tree", "id": id++ };
                 tile.appendChild(pic)
@@ -169,7 +172,11 @@ const toolBoxArray = [
     { "name": "pickaxe", "image": "Pickaxe.png" },
     { "name": "shovel", "image": "Shovel.png" }
 ]
-const inventoryArray = [{ "name": "rocks", "image": "rocks.jpg", "quantity": 0 }, { "name": "trees", "image": "trees.jpg", "quantity": 0 }, { "name": "dirt", "image": "dirt.jpg", "quantity": 0 }]
+const inventoryArray = [
+    { "name": "trees", "image": "trees.jpg", "quantity": 0 },
+    { "name": "rocks", "image": "rocks.jpg", "quantity": 0 },
+    { "name": "dirt", "image": "dirt.jpg", "quantity": 0 }
+]
 const toolBox = document.querySelector(".toolbox");
 const inventory = document.querySelector(".inventory");
 const player = document.querySelector("#player");
@@ -192,16 +199,24 @@ toolBoxArray.forEach(tool => {
     img.addEventListener("click", e => changeTool(e.target));
     toolBox.appendChild(img);
 })
+const createInventory = () => {
+    inventory.innerHTML ="";
+    inventoryArray.forEach(tile => {
+        let div = document.createElement("div");
+        div.className = "inventory-item";
+        let img = document.createElement("img");
+        img.src = `./images/${tile.image}`;
+        img.id = tile.name;
+        let badge = document.createElement("span");
+        badge.className = "badge";
+        badge.style.position = "absolute";
+        badge.innerHTML = tile.quantity;
+        div.appendChild(img);
+        div.appendChild(badge)
+        inventory.appendChild(div);
+    });
+}
 
-inventoryArray.forEach(tile => {
-    let img = document.createElement("img");
-    img.src = `./images/${tile.image}`;
-    img.id = tile.name;
-    inventory.appendChild(img);
-    let bubble = document.createElement("div");
-    bubble.innerHTML = 1;
-    img.appendChild(bubble)
-});
 document.querySelector("#info").addEventListener("click", (e) => {
     let infoBox = document.querySelector(".information");
     if (infoBox.style.display === "none") {
@@ -213,8 +228,11 @@ document.querySelector("#info").addEventListener("click", (e) => {
 })
 document.addEventListener("keydown", movePlayer);
 document.querySelectorAll(".toolbox img")[0].className = "active"
-document.querySelectorAll(".inventory img")[0].className = "active"
 createBoard();
 setArrayOfObstacles();
 player.style.width = document.querySelector(".tile").getBoundingClientRect().width + "px";
 player.style.height = document.querySelector(".tile").getBoundingClientRect().height + "px";
+document.querySelectorAll(".inventory img")[0].className = "active"
+
+
+const inventoryItems = document.querySelectorAll(".inventory-item img");

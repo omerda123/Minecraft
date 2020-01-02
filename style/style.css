@@ -43,10 +43,27 @@ body{
 
 .toolbox img , .inventory img{
     width: 80%;
-    height: 20%;
-    margin: 15px;
+    /* height: 20%; */
+    /* margin: 15px; */
 }
+.inventory-item {
+    display: flex;
+    position: relative;
+    margin-bottom:15px;
+    justify-content: center;
 
+}
+.inventory-item .badge{
+    top:-15%;
+    right:1%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    /* margin: 0 auto; */
+    background-color: red;
+    border-radius: 50%;
+    font-size: 20px;
+}
 #player{
     position: absolute;
     /* background-color: red; */
