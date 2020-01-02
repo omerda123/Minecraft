@@ -16,13 +16,14 @@ const getPlayerRowsAndColsByPosition = () => {
 }
 
 const changeTool = (el) => {
-    if ([1,2,3].includes(tool))
+    console.log(el)
+    console.log(el.id);
+    if (["axe", "pickaxe", "shovel"].includes(tool))
         tool = el.id;
-    else if ([4,5,6])
+    else if (["rocks", "trees", "dirt"])
         build = el.id
-        
-    console.log(el,build);
-    document.querySelectorAll(`.${el.parentNode.className} img`).forEach(tool => tool.classList.remove("active") );
+
+    document.querySelectorAll(`.${el.parentNode.className} img`).forEach(tool => tool.classList.remove("active"));
     el.className = "active";
 }
 
@@ -30,17 +31,27 @@ const changeTool = (el) => {
 
 const movePlayer = (e) => {
     let playerPosition = getPlayerRowsAndColsByPosition();
-
+    document.querySelectorAll(".red").forEach(red => red.classList.remove("red"));
     if (e.keyCode == '87') {// up arrow
         direction = "up";
         if (tilesArray[playerPosition.row - 1][playerPosition.col] === 0)
             topPosition -= 1;
+        else {
+            document.getElementById(tilesArray[playerPosition.row - 1][playerPosition.col].id).classList.add("red");
+            tile = tilesArray[playerPosition.row-1][playerPosition.col].type;
+
+        }
         player.style.top = topPosition + "%"
     }
     else if (e.keyCode == '83') { // down arrow
         direction = "down";
         if (tilesArray[playerPosition.row + 1][playerPosition.col] === 0)
             topPosition += 1;
+        else {
+            document.getElementById(tilesArray[playerPosition.row + 1][playerPosition.col].id).classList.add("red");
+            tile = tilesArray[playerPosition.row +1][playerPosition.col].type;
+
+        }
         player.style.top = topPosition + "%"
     }
     else if (e.keyCode == '65') { // left arrow
@@ -48,6 +59,11 @@ const movePlayer = (e) => {
         player.style.transform = "rotateY(180deg)";
         if (tilesArray[playerPosition.row][playerPosition.col - 1] === 0)
             left -= 1;
+        else {
+            document.getElementById(tilesArray[playerPosition.row][playerPosition.col - 1].id).classList.add("red");
+            tile = tilesArray[playerPosition.row ][playerPosition.col - 1].type;
+
+        }
         player.style.left = left + "%"
 
     }
@@ -56,6 +72,10 @@ const movePlayer = (e) => {
         player.style.transform = "rotateY(0deg)";
         if (tilesArray[playerPosition.row][playerPosition.col + 1] === 0)
             left += 1;
+        else {
+            document.getElementById(tilesArray[playerPosition.row][playerPosition.col + 1].id).classList.add("red");
+            tile = tilesArray[playerPosition.row ][playerPosition.col +1].type;
+        }
         player.style.left = left + "%"
     }
     else if ([49, 50, 51].includes(e.keyCode)) {
@@ -66,21 +86,24 @@ const movePlayer = (e) => {
     }
 
     else if (e.keyCode == '32') { // space
-        if (direction === "right") {
-            document.getElementById(tilesArray[playerPosition.row][playerPosition.col + 1].id).remove();
-            tilesArray[playerPosition.row][playerPosition.col + 1] = 0;
-        }
-        if (direction === "left") {
-            document.getElementById(tilesArray[playerPosition.row][playerPosition.col - 1].id).remove();
-            tilesArray[playerPosition.row][playerPosition.col - 1] = 0;
-        }
-        if (direction === "up") {
-            document.getElementById(tilesArray[playerPosition.row - 1][playerPosition.col].id).remove();
-            tilesArray[playerPosition.row - 1][playerPosition.col] = 0;
-        }
-        if (direction === "down") {
-            document.getElementById(tilesArray[playerPosition.row + 1][playerPosition.col].id).remove();
-            tilesArray[playerPosition.row + 1][playerPosition.col] = 0;
+        console.log(tool, tile);
+        if ((tool === "axe" && tile === "tree") || (tool === "pickaxe" && tile === "rocks") || (tool === "shovel" && tile === "dirt")) {
+            if (direction === "right") {
+                document.getElementById(tilesArray[playerPosition.row][playerPosition.col + 1].id).remove();
+                tilesArray[playerPosition.row][playerPosition.col + 1] = 0;
+            }
+            if (direction === "left") {
+                document.getElementById(tilesArray[playerPosition.row][playerPosition.col - 1].id).remove();
+                tilesArray[playerPosition.row][playerPosition.col - 1] = 0;
+            }
+            if (direction === "up") {
+                document.getElementById(tilesArray[playerPosition.row - 1][playerPosition.col].id).remove();
+                tilesArray[playerPosition.row - 1][playerPosition.col] = 0;
+            }
+            if (direction === "down") {
+                document.getElementById(tilesArray[playerPosition.row + 1][playerPosition.col].id).remove();
+                tilesArray[playerPosition.row + 1][playerPosition.col] = 0;
+            }
         }
     }
 }
@@ -102,9 +125,10 @@ const createBoard = () => {
         for (let j = 0; j < 20; j++) {
             tilesArray[i][j] = 0;
             let tile = document.createElement("div");
-            if (((i == 3) || (i == 4)) && ((j == 12) || (j == 13) || (j == 14))) {  // create tree
+            if (((i == 3) || (i == 4)) && ((j == 12) || (j == 13) || (j == 14))) {  // create trees
                 let pic = document.createElement("img");
                 pic.src = "./images/trees.jpg";
+                pic.className = "tree"
                 pic.id = id;
                 tilesArray[i][j] = { "type": "tree", "id": id++ };
                 tile.appendChild(pic)
@@ -113,6 +137,7 @@ const createBoard = () => {
             if (((i == 6) || (i == 5)) && (j == 13)) {
                 let pic = document.createElement("img");
                 pic.src = "./images/log.jpg";
+                pic.className = "tree"
                 pic.id = id;
                 tilesArray[i][j] = { "type": "tree", "id": id++ };
                 tile.appendChild(pic)
@@ -120,6 +145,7 @@ const createBoard = () => {
             if ((i === 7) && (j != 0) && (j != 1)) {
                 let pic = document.createElement("img");
                 pic.src = "./images/rocks.jpg";
+                pic.className = "rock"
                 pic.id = id;
                 tilesArray[i][j] = { "type": "rocks", "id": id++ };
                 tile.appendChild(pic)
@@ -127,6 +153,7 @@ const createBoard = () => {
             if ((i == 9) || (i == 8)) {
                 let pic = document.createElement("img");
                 pic.src = "./images/dirt.jpg";
+                pic.className = "dirt"
                 pic.id = id;
                 tilesArray[i][j] = { "type": "dirt", "id": id++ };
                 tile.appendChild(pic)
@@ -155,6 +182,7 @@ let left = 0;
 let topPosition = 0;
 let tilesY = [];
 let tilesX = [];
+let tile;
 
 
 toolBoxArray.forEach(tool => {

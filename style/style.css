@@ -58,6 +58,10 @@ body{
 .active{
     border:3px solid red;
 }
+
+.red{
+    border: 1px solid crimson;
+}
 .cloud{
     position: absolute;
     width: 30%;
@@ -67,7 +71,7 @@ body{
 }
 
 .tile{
-    border: 1px solid black;
+    /* border: 1px solid black; */
     width:5%;
     height: 10%;
 }
