@@ -16,20 +16,22 @@ const getPlayerRowsAndColsByPosition = () => {
 }
 
 const changeTool = (el) => {
+    // console.log(el.id);
 
-    if (["axe", "pickaxe", "shovel"].includes(tool))
+    if (["axe", "pickaxe", "shovel"].includes(el.id))
         tool = el.id;
-    else if (["rocks", "trees", "dirt"])
-        build = el.id
-
+    else if (["rocks", "trees", "dirt"].includes(el.id))
+        build = el.id;
+    console.log(el);
     document.querySelectorAll(`.${el.parentNode.className} img`).forEach(tool => tool.classList.remove("active"));
-    el.className = "active";
+    document.querySelector(`#${build}`).classList.add("active");
 }
 
 
 
 const movePlayer = (e) => {
     let playerPosition = getPlayerRowsAndColsByPosition();
+    console.log(playerPosition.row, playerPosition.col);
     document.querySelectorAll(".red").forEach(red => red.classList.remove("red"));
     if (e.keyCode == '87') {// up arrow
         direction = "up";
@@ -81,12 +83,11 @@ const movePlayer = (e) => {
         changeTool(toolBox.querySelector(`img:nth-child(${e.keyCode - 48})`))
     }
     else if ([52, 53, 54].includes(e.keyCode)) {
-
         changeTool(inventoryItems[e.keyCode - 52])
     }
 
     else if (e.keyCode == '32') { // space
-        // console.log(tool, tile);
+        console.log(tool, tile);
         if ((tool === "axe" && tile === "trees") || (tool === "pickaxe" && tile === "rocks") || (tool === "shovel" && tile === "dirt")) {
             if (direction === "right") {
                 document.getElementById(tilesArray[playerPosition.row][playerPosition.col + 1].id).remove();
@@ -105,6 +106,18 @@ const movePlayer = (e) => {
                 tilesArray[playerPosition.row + 1][playerPosition.col] = 0;
             }
             inventoryArray[inventoryArray.findIndex(x => { return x.name == tile })].quantity++;
+            createInventory();
+        }
+    }
+    else if (e.keyCode == '13') { // enter
+        console.log(tile);
+        if (inventoryArray[inventoryArray.findIndex(x => { return x.name == build })].quantity > 0) {
+            let pos = document.getElementsByClassName((playerPosition.row * 20) + playerPosition.col)[0];
+            let img = document.createElement("img");
+            img.src = `./images/${build}.jpg`;
+            pos.appendChild(img);
+            tilesArray[playerPosition.row][playerPosition.col + 1] = 0;
+            inventoryArray[inventoryArray.findIndex(x => { return x.name == build })].quantity--;
             createInventory();
         }
     }
@@ -133,7 +146,7 @@ const createBoard = () => {
                 pic.src = "./images/trees.jpg";
                 pic.className = "trees"
                 pic.id = id;
-                tilesArray[i][j] = { "type": "trees", "id": id++ };
+                tilesArray[i][j] = { "type": "trees", "id": id };
                 tile.appendChild(pic)
             }
 
@@ -142,7 +155,7 @@ const createBoard = () => {
                 pic.src = "./images/log.jpg";
                 pic.className = "trees"
                 pic.id = id;
-                tilesArray[i][j] = { "type": "tree", "id": id++ };
+                tilesArray[i][j] = { "type": "trees", "id": id };
                 tile.appendChild(pic)
             }
             if ((i === 7) && (j != 0) && (j != 1)) {
@@ -150,7 +163,7 @@ const createBoard = () => {
                 pic.src = "./images/rocks.jpg";
                 pic.className = "rock"
                 pic.id = id;
-                tilesArray[i][j] = { "type": "rocks", "id": id++ };
+                tilesArray[i][j] = { "type": "rocks", "id": id };
                 tile.appendChild(pic)
             }
             if ((i == 9) || (i == 8)) {
@@ -158,11 +171,12 @@ const createBoard = () => {
                 pic.src = "./images/dirt.jpg";
                 pic.className = "dirt"
                 pic.id = id;
-                tilesArray[i][j] = { "type": "dirt", "id": id++ };
+                tilesArray[i][j] = { "type": "dirt", "id": id };
                 tile.appendChild(pic)
             }
-            tile.className = "tile";
+            tile.className = "tile" + " " + id;
             world.appendChild(tile);
+            id++;
         }
     }
 }
@@ -182,14 +196,14 @@ const inventory = document.querySelector(".inventory");
 const player = document.querySelector("#player");
 const world = document.querySelector(".world");
 let tool = toolBoxArray[0].name;
-let build = inventoryArray[0].name;
+let build = "trees";
 let tilesArray = [];
 let direction;
 let left = 0;
 let topPosition = 0;
 let tilesY = [];
 let tilesX = [];
-let tile;
+let tile = "trees";
 
 
 toolBoxArray.forEach(tool => {
@@ -200,7 +214,7 @@ toolBoxArray.forEach(tool => {
     toolBox.appendChild(img);
 })
 const createInventory = () => {
-    inventory.innerHTML ="";
+    inventory.innerHTML = "";
     inventoryArray.forEach(tile => {
         let div = document.createElement("div");
         div.className = "inventory-item";
@@ -215,6 +229,8 @@ const createInventory = () => {
         div.appendChild(badge)
         inventory.appendChild(div);
     });
+    console.log(build);
+    document.querySelector(`#${build}`).classList.add("active");
 }
 
 document.querySelector("#info").addEventListener("click", (e) => {
