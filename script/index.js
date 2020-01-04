@@ -17,14 +17,16 @@ const getPlayerRowsAndColsByPosition = () => {
 
 const changeTool = (el) => {
     // console.log(el.id);
-
-    if (["axe", "pickaxe", "shovel"].includes(el.id))
-        tool = el.id;
-    else if (["rocks", "trees", "dirt"].includes(el.id))
-        build = el.id;
-    console.log(el);
     document.querySelectorAll(`.${el.parentNode.className} img`).forEach(tool => tool.classList.remove("active"));
-    document.querySelector(`#${build}`).classList.add("active");
+    if (["axe", "pickaxe", "shovel"].includes(el.id)){
+        tool = el.id;
+        document.querySelector(`#${tool}`).classList.add("active");
+    }
+    else if (["rocks", "trees", "dirt"].includes(el.id)){
+        build = el.id;
+        document.querySelector(`#${build}`).classList.add("active");
+    }
+    console.log(el);
 }
 
 
@@ -111,12 +113,15 @@ const movePlayer = (e) => {
     }
     else if (e.keyCode == '13') { // enter
         console.log(tile);
+        let temp = (playerPosition.row * 20) + playerPosition.col;
         if (inventoryArray[inventoryArray.findIndex(x => { return x.name == build })].quantity > 0) {
-            let pos = document.getElementsByClassName((playerPosition.row * 20) + playerPosition.col)[0];
+            let pos = document.getElementsByClassName(temp)[0];
             let img = document.createElement("img");
             img.src = `./images/${build}.jpg`;
+            img.className = build;
+            img.id =temp;
             pos.appendChild(img);
-            tilesArray[playerPosition.row][playerPosition.col + 1] = 0;
+            tilesArray[playerPosition.row][playerPosition.col] =  { "type": build, "id":temp }
             inventoryArray[inventoryArray.findIndex(x => { return x.name == build })].quantity--;
             createInventory();
         }
